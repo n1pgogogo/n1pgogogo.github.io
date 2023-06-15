@@ -1,8 +1,8 @@
 <script setup>
 import * as d3 from "d3";
 import * as topojson from "topojson";
-import { onMounted, reactive, ref, watch } from "vue";
-
+import { inject, onMounted, reactive, ref, watch } from "vue";
+const isdark = inject("isdark");
 const regionBigFiveData = reactive({ data: {}, color: {} }); // 地区大五人格的信息
 import("../../../assets/data/assume.json")
     .then(r => r.default)
@@ -31,7 +31,6 @@ onMounted(() => {
         .then(r => {
             const geoData = topojson.feature(r, r.objects.default)
             // 定义地理投影函数
-            console.log(document.body.offsetWidth)
             const scale = document.body.offsetWidth <= 900 ? 350 : 700;
             const projection = d3.geoMercator().center([106, 36]).scale(scale);
             // 创建地理路径生成器
@@ -60,20 +59,23 @@ onMounted(() => {
                     const name = feature.properties.name;
                     if (feature.properties.name == selectRegion.value) {
                         // 选中的区域
-                        context.strokeStyle = "red";
-                        context.lineWidth = 0.5;
-                        context.fillStyle = "blue";
+                        context.strokeStyle = "#000000";
+                        context.lineWidth = 0.15;
+                        context.fillStyle = "#FAD69D";
                     } else {
                         if (regionBigFiveData.color[name]) {
                             // 有信息的区域
-                            context.strokeStyle = "#ffffff";
-                            context.fillStyle = `rgba(255, 0, 0, ${regionBigFiveData.color[name][selectBigFive.value]})`;
-                            // context.globalAlpha = regionBigFiveData.color[name][selectBigFive.value];
+                            context.strokeStyle = "#000000";
+                            const regionColor = regionBigFiveData.color[name][selectBigFive.value];
+                            // console.log(regionColor);
+                            const r = regionColor < 0.5 ? 200 * 2 * regionColor : 200;
+                            const g = 200 - 200 * Math.abs(1 - 2 * regionColor);
+                            const b = regionColor > 0.5 ? 200 * (2 - 2 * regionColor) : 200;
+                            context.fillStyle = `rgb(${r}, ${g}, ${b})`;
                         } else {
                             // 没有信息的区域
-                            // context.globalAlpha = 0.5;
-                            context.strokeStyle = "#ffffff";
-                            context.fillStyle = "rgb(0, 0, 0)";
+                            context.strokeStyle = "#000000";
+                            context.fillStyle = "rgb(200, 200, 200)";
                         }
                         context.lineWidth = 0.2;
                     }
@@ -130,6 +132,7 @@ onMounted(() => {
             <div :class="{ selected: selectBigFive == 'C', navButton: true }" style="--c: rgb(196, 74, 147);" @click="selectBigFive = 'C'">尽责性</div>
         </div>
         <canvas id="geoMap"></canvas>
+        <div class="legend"><div></div></div>
     </div>
 </template>
 
@@ -138,6 +141,40 @@ onMounted(() => {
     width: 100%;
     height: calc(100vh - 80px);
     position: relative;
+}
+
+#map .legend {
+    display: block;
+    width: 256px;
+    height: 16px;
+    position: absolute;
+    bottom: 10%;
+    right: 10%;
+    background-color: #e3e3e3;
+    background-image: linear-gradient(to right, #0000ff, #d4d4d4, #ff0000);
+    user-select: none;
+    cursor: default;
+    color: var(--color-B);
+}
+#map .legend>div {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+#map .legend>div::before {
+    content: "低";
+    position: absolute;
+    left: 0;
+    font-size: 16px;
+    line-height: 16px;
+}
+
+#map .legend>div::after {
+    content: "高";
+    position: absolute;
+    right: 0;
+    font-size: 16px;
+    line-height: 16px;
 }
 
 #map .silder {
@@ -168,6 +205,7 @@ onMounted(() => {
 
 #map .silder div.selected {
     background-color: var(--c);
+    color: var(--color-B);
 }
 
 #map canvas {
@@ -187,6 +225,10 @@ onMounted(() => {
         height: 24px;
         line-height: 24px;
         font-size: 16px;
+    }
+
+    #map .legend {
+        width: 128px;
     }
 }
 </style>

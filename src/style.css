@@ -19,6 +19,7 @@
   --color-bg: var(--color-black);
   --color-font: var(--color-B);
   --color-shadow: rgba(255, 255, 255, 0.25);
+  
   color-scheme: light dark;
   color: var(--color-font);
   background-color: var(--color-bg);
