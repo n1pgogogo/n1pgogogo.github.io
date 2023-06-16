@@ -6,6 +6,7 @@ const router = useRouter();
 const route = useRoute();
 const menuList = [
     { title: "空间分布", path: "/layout/home" },
+    { title: "时间分布", path: "/layout/time" },
     { title: "关于我们", path: "/layout/about" }
 ];
 

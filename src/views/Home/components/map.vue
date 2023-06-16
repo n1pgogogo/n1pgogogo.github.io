@@ -1,9 +1,12 @@
 <script setup>
 import * as d3 from "d3";
 import * as topojson from "topojson";
-import { inject, onMounted, reactive, ref, watch } from "vue";
-const isdark = inject("isdark");
+import { inject, onMounted, provide, reactive, ref, watch } from "vue";
+
+import barVue from "./bar.vue";
+
 const regionBigFiveData = reactive({ data: {}, color: {} }); // 地区大五人格的信息
+provide("regionBigFiveData", regionBigFiveData);
 import("../../../assets/data/assume.json")
     .then(r => r.default)
     .then(r => {
@@ -17,6 +20,14 @@ import("../../../assets/data/assume.json")
         });
         regionBigFiveData.color = tmpObj;
     });
+
+const bigGiveColor = {
+    N: [75, 121, 170],
+    E: [236, 59, 85],
+    O: [242, 165, 47],
+    A: [51, 188, 100],
+    C: [196, 74, 147]
+};
 
 const selectBigFive = ref("N"); // 选择了哪个特质。
 const selectRegion = ref(""); // 选择了哪个地方
@@ -68,14 +79,19 @@ onMounted(() => {
                             context.strokeStyle = "#000000";
                             const regionColor = regionBigFiveData.color[name][selectBigFive.value];
                             // console.log(regionColor);
-                            const r = regionColor < 0.5 ? 200 * 2 * regionColor : 200;
-                            const g = 200 - 200 * Math.abs(1 - 2 * regionColor);
-                            const b = regionColor > 0.5 ? 200 * (2 - 2 * regionColor) : 200;
+                            // const r = regionColor < 0.5 ? 200 * 2 * regionColor : 200;
+                            // const g = 200 - 200 * Math.abs(1 - 2 * regionColor);
+                            // const b = regionColor > 0.5 ? 200 * (2 - 2 * regionColor) : 200;
+                            const bg = [200, 200, 200];
+                            const rgb = bigGiveColor[selectBigFive.value];
+                            const r = bg[0] + (rgb[0] - 200) * regionColor;
+                            const g = bg[1] + (rgb[1] - 200) * regionColor;
+                            const b = bg[2] + (rgb[2] - 200) * regionColor;
                             context.fillStyle = `rgb(${r}, ${g}, ${b})`;
                         } else {
                             // 没有信息的区域
                             context.strokeStyle = "#000000";
-                            context.fillStyle = "rgb(200, 200, 200)";
+                            context.fillStyle = "rgb(0, 0, 0)";
                         }
                         context.lineWidth = 0.2;
                     }
@@ -122,17 +138,28 @@ onMounted(() => {
 <template>
     <div id="map">
         <div class="silder">
-            <div :class="{ selected: selectBigFive == 'N', navButton: true }" style="--c: rgb(75, 121, 170);" @click="selectBigFive = 'N'">神经质
+            <div :class="{ selected: selectBigFive == 'N', navButton: true }" style="--c: rgb(75, 121, 170);"
+                @click="selectBigFive = 'N'">神经质
             </div>
-            <div :class="{ selected: selectBigFive == 'E', navButton: true }" style="--c: rgb(236, 59, 85);" @click="selectBigFive = 'E'">外倾性</div>
-            <div :class="{ selected: selectBigFive == 'O', navButton: true }" style="--c: rgb(242, 165, 47);" @click="selectBigFive = 'O'">开放性
+            <div :class="{ selected: selectBigFive == 'E', navButton: true }" style="--c: rgb(236, 59, 85);"
+                @click="selectBigFive = 'E'">外倾性</div>
+            <div :class="{ selected: selectBigFive == 'O', navButton: true }" style="--c: rgb(242, 165, 47);"
+                @click="selectBigFive = 'O'">开放性
             </div>
-            <div :class="{ selected: selectBigFive == 'A', navButton: true }" style="--c: rgb(51, 188, 100);" @click="selectBigFive = 'A'">宜人性
+            <div :class="{ selected: selectBigFive == 'A', navButton: true }" style="--c: rgb(51, 188, 100);"
+                @click="selectBigFive = 'A'">宜人性
             </div>
-            <div :class="{ selected: selectBigFive == 'C', navButton: true }" style="--c: rgb(196, 74, 147);" @click="selectBigFive = 'C'">尽责性</div>
+            <div :class="{ selected: selectBigFive == 'C', navButton: true }" style="--c: rgb(196, 74, 147);"
+                @click="selectBigFive = 'C'">尽责性</div>
         </div>
         <canvas id="geoMap"></canvas>
-        <div class="legend"><div></div></div>
+        <div class="legend"
+            :style="`--c: rgb(${bigGiveColor[selectBigFive][0]}, ${bigGiveColor[selectBigFive][1]}, ${bigGiveColor[selectBigFive][2]}); --f: ${0.299 * bigGiveColor[selectBigFive][0] + 0.587 * bigGiveColor[selectBigFive][1] + 0.114 * bigGiveColor[selectBigFive][2] > 128 ? 'rgb(24, 24, 24)' : 'rgb(200, 200, 200)'};`">
+            <div></div>
+        </div>
+        <div class="bar" v-if="selectRegion != ''">
+            <barVue :region="selectRegion"></barVue>
+        </div>
     </div>
 </template>
 
@@ -143,28 +170,38 @@ onMounted(() => {
     position: relative;
 }
 
+#map .bar {
+    width: 500px;
+    position: absolute;
+    top: 0;
+    left: calc(50% - 250px);
+}
+
 #map .legend {
     display: block;
-    width: 256px;
-    height: 16px;
+    width: 17px;
+    height: 256px;
     position: absolute;
     bottom: 10%;
     right: 10%;
-    background-color: #e3e3e3;
-    background-image: linear-gradient(to right, #0000ff, #d4d4d4, #ff0000);
+    background-image: linear-gradient(to bottom, var(--c), #d4d4d4);
     user-select: none;
     cursor: default;
-    color: var(--color-B);
+    color: var(--f);
 }
+
 #map .legend>div {
     width: 100%;
     height: 100%;
     position: absolute;
 }
+
 #map .legend>div::before {
     content: "低";
     position: absolute;
     left: 0;
+    bottom: 0;
+    color: var(--color-black);
     font-size: 16px;
     line-height: 16px;
 }
@@ -172,7 +209,7 @@ onMounted(() => {
 #map .legend>div::after {
     content: "高";
     position: absolute;
-    right: 0;
+    left: 0;
     font-size: 16px;
     line-height: 16px;
 }
@@ -228,7 +265,11 @@ onMounted(() => {
     }
 
     #map .legend {
-        width: 128px;
+        height: 128px;
     }
-}
-</style>
+
+    #map .bar {
+        width: 50%;
+        left: 25%;
+    }
+}</style>
