@@ -12,7 +12,6 @@ const bigFive = ['N', 'E', 'O', 'A', 'C'];
 const bigFiveName = ['神经质', '外倾性', '开放性', '宜人性', '尽责性'];
 
 const bigFiveData = inject("regionBigFiveData");
-console.log(bigFiveData.data[props.region][bigFive[0]]);
 const LMH_color = ["rgb(0, 0, 124)", "rgb(124, 124, 124)", "rgb(124, 0, 0)"];
 </script>
 

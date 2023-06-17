@@ -20,13 +20,13 @@ import("@/assets/data/time.json")
                 u.push(r[v][sort[i]][1]);
                 h.push(r[v][sort[i]][2]);
 
-                lp.push(Math.floor(r[v][sort[i]][0] / (r[v][sort[i]][0] + r[v][sort[i]][1] + r[v][sort[i]][2]) * 100));
-                up.push(Math.floor(r[v][sort[i]][1] / (r[v][sort[i]][0] + r[v][sort[i]][1] + r[v][sort[i]][2]) * 100));
-                hp.push(Math.floor(r[v][sort[i]][2] / (r[v][sort[i]][0] + r[v][sort[i]][1] + r[v][sort[i]][2]) * 100));
+                lp.push(Math.round(r[v][sort[i]][0] / (r[v][sort[i]][0] + r[v][sort[i]][1] + r[v][sort[i]][2]) * 10000) / 100);
+                up.push(Math.round(r[v][sort[i]][1] / (r[v][sort[i]][0] + r[v][sort[i]][1] + r[v][sort[i]][2]) * 10000) / 100);
+                hp.push(Math.round(r[v][sort[i]][2] / (r[v][sort[i]][0] + r[v][sort[i]][1] + r[v][sort[i]][2]) * 10000) / 100);
             }
             dataSets.raw_data.push({
                 title: {
-                    text: `${v}`
+                    text: `${v}年中国大五人格分布情况`
                 },
                 series: [
                     { data: l },
@@ -36,7 +36,7 @@ import("@/assets/data/time.json")
             });
             dataSets.data.push({
                 title: {
-                    text: `${v}`
+                    text: `${v}年中国大五人格分布情况`
                 },
                 series: [
                     { data: lp },
@@ -63,8 +63,7 @@ onMounted(() => {
                 tooltip: {
                     trigger: 'item',
                     formatter: (params) => {
-                        console.log(params);
-                        return `有${params.value}%人的${params.name}为${params.seriesName}`;
+                        return params.componentType == "series" ? `有${params.value}%人的${params.name}为${params.seriesName}` : `${params.name}年`;
                     }
                 },
                 legend: {
@@ -82,16 +81,19 @@ onMounted(() => {
                     type: 'value',
                     axisLabel: {
                         formatter: '{value} %'
-                    }
+                    },
+                    min: 0,
+                    max: 100,
+                    interval: 20
                 },
                 yAxis: {
                     type: 'category',
                     data: ['尽责性', '宜人性', '开放性', '外倾性', '神经质']
                 },
                 series: [
-                    { name: "低", type: "bar", stack: "y" },
-                    { name: "未知", type: "bar", stack: "y" },
-                    { name: "高", type: "bar", stack: "y" }
+                    { name: "低", type: "bar", stack: "y", itemStyle: { color: "rgb(0, 0, 124)" } },
+                    { name: "未知", type: "bar", stack: "y", itemStyle: { color: "rgb(124, 124, 124)" } },
+                    { name: "高", type: "bar", stack: "y", itemStyle: { color: "rgb(124, 0, 0)" } }
                 ],
             },
             options: dataSets.data
