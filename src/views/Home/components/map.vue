@@ -142,7 +142,7 @@ onMounted(() => {
                 @click="selectBigFive = 'N'">神经质
             </div>
             <div :class="{ selected: selectBigFive == 'E', navButton: true }" style="--c: rgb(236, 59, 85);"
-                @click="selectBigFive = 'E'">外倾性</div>
+                @click="selectBigFive = 'E'">外向性</div>
             <div :class="{ selected: selectBigFive == 'O', navButton: true }" style="--c: rgb(242, 165, 47);"
                 @click="selectBigFive = 'O'">开放性
             </div>
