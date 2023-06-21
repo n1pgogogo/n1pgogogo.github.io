@@ -5,6 +5,14 @@
 </template>
 
 <script setup>
+import Tokenizator from "../../worker/token?worker"
+
+const token = new Tokenizator();
+token.postMessage("what")
+token.onmessage = e => {
+  console.log(e)
+}
+
 import { Tensor, InferenceSession } from "onnxjs";
 
 const session = new InferenceSession();
@@ -15,13 +23,8 @@ for (let i = 0; i < 768; i++) {
     inp.push(Math.random());
 }
 
-console.log(inp)
-const inputs = [
-  new Tensor(new Float32Array(inp), "float32", [1, 768]),
-];
-
+const inputs = new Tensor(new Float32Array(inp), "float32", [1, 768]);
 loadingModelPromise.then(() => {
-    session.run(inputs).then((r) => {console.log(r)});
-    // const outputTensor = outputMap.values().next().value;
+    session.run(inputs).then((r) => {console.log(r.values().next())});
 });
 </script>
