@@ -16,7 +16,7 @@ token.onmessage = e => {
 import { Tensor, InferenceSession } from "onnxjs";
 
 const session = new InferenceSession();
-const loadingModelPromise = session.loadModel("./model/pre.onnx");
+const loadingModelPromise = session.loadModel("./model/albert.onnx");
 
 const inp = []
 for (let i = 0; i < 768; i++) {
