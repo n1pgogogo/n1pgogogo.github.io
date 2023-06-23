@@ -53,7 +53,7 @@
     <div style="width: 128px; height: 128px; background-image: url(./assets/avator/jp.jpg); background-size: contain; border-radius: 50%; display: inline-block; vertical-align: top;"></div>
     <div style="display: inline-block; vertical-align: top;">
         <h2>杨静平</h2>
-        <!-- <p>email: psy_chengx@163.com</p> -->
+        <p>email: jpj.yang@outlook.com</p>
     </div>
 </div>
 </div>
