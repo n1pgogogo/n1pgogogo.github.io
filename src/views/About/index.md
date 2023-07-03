@@ -12,6 +12,18 @@
 
 # 团队成员
 
+## 指导老师
+
+<div>
+    <div style="width: 128px; height: 128px; background-image: url(./assets/avator/wy.jpg); background-size: contain; border-radius: 50%; display: inline-block; vertical-align: top;"></div>
+    <div style="display: inline-block; vertical-align: top;">
+        <h2>汪寅</h2>
+        <div>email: yin.wang@bnu.edu.cn</div>
+    </div>
+</div>
+
+## 俊男靓女
+
 <div>
     <div style="width: 128px; height: 128px; background-image: url(./assets/avator/cx.jpg); background-size: contain; border-radius: 50%; display: inline-block; vertical-align: top;"></div>
     <div style="display: inline-block; vertical-align: top;">
