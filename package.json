@@ -12,6 +12,7 @@
     "d3": "^7.8.5",
     "echarts": "^5.4.2",
     "onnxruntime-web": "^1.15.1",
+    "tokenizers": "^0.13.3",
     "topojson": "^3.0.2",
     "vditor": "^3.9.3",
     "vue": "^3.2.47",
