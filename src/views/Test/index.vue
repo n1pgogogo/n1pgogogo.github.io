@@ -1,7 +1,7 @@
 <script setup>
 import Tokenizator from "@/worker/token?worker";
 import { Tensor, InferenceSession } from "onnxruntime-web";
-import { onUnmounted, reactive, ref } from "vue";
+import { onMounted, onUnmounted, reactive, ref } from "vue";
 import loading from "@/components/loading.vue";
 
 let session_pre, session_filter;
@@ -9,58 +9,32 @@ const token = new Tokenizator();
 token.onmessage = e => {
     switch (e.data.action) {
         case 0:
+            if (e.data.result == 1) clickable.value = 1;
             break;
         case 1:
-            const inputs_r = e.data.result;
-            const inputs = {
-                input_ids: new Tensor("int64", inputs_r["input_ids"], [1, 512]),
-                token_type_ids: new Tensor("int64", inputs_r["token_type_ids"], [1, 512]),
-                attention_mask: new Tensor("int64", inputs_r["attention_mask"], [1, 512])
-            };
-            session_filter.run(inputs).then(r => {
-                if (r.pre.data[0] < 0.5) {
-                    res_per.N = 1
-                    res_per.E = 1
-                    res_per.O = 1
-                    res_per.A = 1
-                    res_per.C = 1
-                    clickable.value = true;
-                } else {
-                    session_pre.run(inputs).then((o) => {
-                        Object.keys(o).forEach((v, i) => {
-                            o[v].data.forEach((vc, ic) => {
-                                if (vc > o[v].data[res_per[v.toUpperCase()]]) {
-                                    res_per[v.toUpperCase()] = ic
-                                }
-                            })
-                        });
-                        clickable.value = true;
-                    })
-                }
+            Object.keys(res_per).forEach(v => {
+                res_per[v] = e.data.result[v];
             });
+            clickable.value = 1;
             break;
     }
 }
 
-import("@/assets/data/vocab.txt?raw")
+onMounted(() => {
+    import("@/assets/data/vocab.txt?raw")
     .then(r => r.default)
     .then(r => {
         const vocabs = r.split("\r\n");
         token.postMessage({ action: 0, data: vocabs });
-        InferenceSession.create("./model/filter.onnx").then(r => {
-            session_filter = r;
-        });
-        InferenceSession.create("./model/pre.onnx").then(r => {
-            session_pre = r;
-        });
     })
+});
 
 onUnmounted(() => {
     token.terminate();
 });
 
 
-const clickable = ref(true);
+const clickable = ref(-1);
 const bigGiveColor = {
     N: [75, 121, 170],
     E: [236, 59, 85],
@@ -78,7 +52,7 @@ const res_per = reactive({
 const desc = ["低", "未知", "高"];
 const word_content = ref("走走走走走，小手拉大手，向着阳光快乐走");
 const pre_click = (e) => {
-    clickable.value = false;
+    clickable.value = 0;
     token.postMessage({ action: 1, data: word_content.value });
 };
 </script>
@@ -89,8 +63,11 @@ const pre_click = (e) => {
             <div class="input-region">
                 <div>请在下方输入框中输入您需要预测的文本</div>
                 <div><textarea name="" id="" cols="50" rows="10" v-model="word_content" /></div>
-                <div class="button" @click="pre_click" v-if="clickable">开始预测</div>
-                <div class="button loading" v-if="!clickable"><loading></loading></div>
+                <div class="button" @click="pre_click" v-if="clickable == 1">开始预测</div>
+                <div class="button" style="cursor: not-allowed;" v-if="clickable == -1">正在加载模型</div>
+                <div class="button loading" v-if="clickable == 0">
+                    <loading></loading>
+                </div>
             </div>
             <div class="show-result">
                 <div class="perN"
@@ -143,6 +120,7 @@ const pre_click = (e) => {
     border: 1px solid var(--color-font);
     cursor: pointer;
 }
+
 .layer .input-region .button.loading {
     border: none;
 }
@@ -181,9 +159,11 @@ const pre_click = (e) => {
         line-height: 24px;
         resize: none;
     }
+
     .layer .show-result {
         width: 350px;
     }
+
     .show-result>div {
         padding: 5px;
     }
