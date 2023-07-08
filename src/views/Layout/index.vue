@@ -7,6 +7,7 @@ const route = useRoute();
 const menuList = [
     { title: "空间分布", path: "/layout/home" },
     { title: "时间分布", path: "/layout/time" },
+    { title: "人格预测", path: "/layout/test" },
     { title: "关于我们", path: "/layout/about" }
 ];
 
@@ -75,5 +76,11 @@ header div .tag {
     z-index: -1;
     border-radius: 50px;
     transition: 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
+}
+
+@media screen and (max-width: 900px) {
+    header ul li {
+        font-size: 12px;
+    }
 }
 </style>
