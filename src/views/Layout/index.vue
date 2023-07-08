@@ -77,4 +77,10 @@ header div .tag {
     border-radius: 50px;
     transition: 0.6s cubic-bezier(0.68,-0.55,0.265,1.55);
 }
+
+@media screen and (max-width: 900px) {
+    header ul li {
+        font-size: 12px;
+    }
+}
 </style>
