@@ -18,7 +18,7 @@
     <div style="width: 128px; height: 128px; background-image: url(./assets/avator/wy.jpg); background-size: contain; border-radius: 50%; display: inline-block; vertical-align: top;"></div>
     <div style="display: inline-block; vertical-align: top;">
         <h2>汪寅</h2>
-        <div>email: yin.wang@bnu.edu.cn</div>
+<!--         <div>email: yin.wang@bnu.edu.cn</div> -->
     </div>
 </div>
 
@@ -28,7 +28,7 @@
     <div style="width: 128px; height: 128px; background-image: url(./assets/avator/cx.jpg); background-size: contain; border-radius: 50%; display: inline-block; vertical-align: top;"></div>
     <div style="display: inline-block; vertical-align: top;">
         <h2>程溪</h2>
-        <div>email: psy_chengx@163.com</div>
+<!--         <div>email: psy_chengx@163.com</div> -->
     </div>
 </div>
 
@@ -58,14 +58,14 @@
     <div style="width: 128px; height: 128px; background-image: url(./assets/avator/xcd.png); background-size: contain; border-radius: 50%; display: inline-block; vertical-align: top;"></div>
     <div style="display: inline-block; vertical-align: top;">
         <h2>徐成东</h2>
-        <div>email: amm&copy;mupsy.net</div>
+<!--         <div>email: amm&copy;mupsy.net</div> -->
     </div>
 </div>
 <div style="min-width: 300px; margin: 40px 0 0 0;">
     <div style="width: 128px; height: 128px; background-image: url(./assets/avator/jp.jpg); background-size: contain; border-radius: 50%; display: inline-block; vertical-align: top;"></div>
     <div style="display: inline-block; vertical-align: top;">
         <h2>杨静平</h2>
-        <p>email: jpj.yang@outlook.com</p>
+<!--         <p>email: jpj.yang@outlook.com</p> -->
     </div>
 </div>
 </div>
